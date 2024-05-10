@@ -10,13 +10,16 @@
 # Run local ledger
 `solana-test-validator`
 
-# Runs a new empty local ledger.
+# Runs a new EMPTY local ledger.
 `solana-test-validator --reset`
+
+# Test app with EMPTY local ledger
+`anchor test`
 
 # Get program ID
 `solana address -k target/deploy/<your-project-name>-keypair.json`
 
-# Run tests from the `Anchor.toml` file
+# Run tests from the `Anchor.toml` file (does not empty the local ledger)
 `anchor run test`
 
 # Look up rent for account size

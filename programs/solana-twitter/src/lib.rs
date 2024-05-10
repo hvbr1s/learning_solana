@@ -6,8 +6,7 @@ declare_id!("2FoavwpHFnnfV3hHppLDQ6pFSvhbGrxd4QCmy9iWAwn7");
 #[program]
 pub mod solana_twitter {
     use super::*;
-
-    pub fn send_tweet(ctx: Context<SendTweet>, topic: String, content: String) -> ProgramResult {
+    pub fn send_tweet(ctx: Context<SendTweet>, topic: String, content: String) -> Result<()> {
         let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
@@ -36,6 +35,7 @@ pub struct SendTweet<'info> {
     #[account(mut)] // this constraint declares that the account that signs the transaction to create the tweet can be mutated to pay for rent
     pub author: Signer<'info>,
     #[account(address = system_program::ID)] // this constraint is here to ensure that the correct system program is passed in the transaction that creates the tweet
+    /// CHECK: This is not dangerous because we don't read or write from this account
     pub system_program: AccountInfo<'info>,
    // pub system_program: Program<'info, System>, // same as line above
 }
@@ -58,7 +58,7 @@ const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
 
 // 3. Add a constant on the Tweet account that provides its total size.
-impl Tweet {
+impl Tweet { 
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Author.
         + TIMESTAMP_LENGTH // Timestamp.
